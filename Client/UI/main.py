@@ -4,6 +4,8 @@ import customtkinter
 import os
 import subprocess
 from cache_handler import CacheHandler
+import requests
+import json
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -82,14 +84,48 @@ class App(customtkinter.CTk):
         customtkinter.set_widget_scaling(new_scaling_float)
 
     def submit_query(self, _):
-        output = subprocess.run(["/Users/gagebenham/Documents/ECE-382V/Project/Client/LexerParser/main", self.user_input.get()], capture_output=True, text=True)
+        query = self.user_input.get()
+        output = subprocess.run(["/Users/gagebenham/Documents/ECE-382V/Project/Client/LexerParser/main", query], capture_output=True, text=True)
         if (output.stderr):
             self.textbox.insert("0.0", output.stderr,tags=["error"])
         else:
-            self.textbox.insert("0.0", "Success\n", tags=["success"])
-            self.update_cache("success")
-    def update_cacher(self, response):
-        self.cache_hander.ch.execute("")
+            if (self.check_cache("success")):
+                try:
+                    response = self.send_neo4j_query("{0}".format(query))
+                    # Check if the request was successful (status code 200)
+                    if response.status_code == 200:
+                        # Parse the response content as needed
+                        result = response.text
+                        tag = "success"
+                    else:
+                        result = f"HTTP Error {response.status_code}: {response.text}"
+                        tag = "error"
+
+
+
+                except Exception as e:
+                    result = (f"An error occurred: {str(e)}")
+                    tag = "error"
+
+                self.textbox.insert("0.0", f"{result}\n", tags=[tag])
+
+
+
+    def check_cache(self, response):
+        # self.cache_hander.ch.execute("")
+        return True
+
+    def send_neo4j_query(self, neo4j_query):
+            # Create a dictionary with the neo4j query as the payload
+            payload = {"query": neo4j_query}
+            json_data = json.dumps(payload)
+
+            # Send an HTTP POST request to the specified URL
+            response = requests.post("http://localhost:8080/query", data=json_data)
+
+            return response
+
+
 
     def sidebar_button_event(self):
         print("sidebar_button click")

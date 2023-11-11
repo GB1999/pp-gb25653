@@ -2,90 +2,158 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
+// Struct for JSON request
+type Neo4jRequest struct {
+	Query      string            `json:"query"`
+	Parameters map[string]string `json:"parameters"`
+}
+
+type JsonNotification struct {
+	// Define fields based on what you need from neo4j.Notification
+	// For example:
+	Code        string `json:"code"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	// Add other fields as required
+}
+
+func convertNotifications(notifications []neo4j.Notification) ([]JsonNotification, error) {
+	var jsonNotifications []JsonNotification
+
+	for _, n := range notifications {
+		// Create an instance of JsonNotification and fill it with data from the notification
+		// This is where you extract the fields you need from each neo4j.Notification
+		jsonNotif := JsonNotification{
+			Code:        n.Code(),
+			Title:       n.Title(),
+			Description: n.Description(),
+		}
+		jsonNotifications = append(jsonNotifications, jsonNotif)
+	}
+
+	return jsonNotifications, nil
+}
+
+// Function to execute read query and return nodes as JSON
+func executeReadQuery(session neo4j.SessionWithContext, request Neo4jRequest) ([]byte, error) {
+	// Convert parameters to map[string]any
+	params := make(map[string]any)
+	for k, v := range request.Parameters {
+		params[k] = v
+	}
+
+	nodes, err := session.ExecuteRead(context.Background(),
+		func(tx neo4j.ManagedTransaction) (any, error) {
+			result, err := tx.Run(context.Background(), request.Query, params)
+			if err != nil {
+				return nil, err
+			}
+			records, err := result.Collect(context.Background())
+			if err != nil {
+				return nil, err
+			}
+			return records, nil
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert the results to JSON
+	jsonData, err := json.Marshal(nodes)
+	if err != nil {
+		return nil, err
+	}
+
+	return jsonData, nil
+}
+
+// Function to execute write query and return result summary
+func executeWriteQuery(session neo4j.SessionWithContext, request Neo4jRequest) (neo4j.ResultSummary, error) {
+	// Convert parameters to map[string]any
+	params := make(map[string]any)
+	for k, v := range request.Parameters {
+		params[k] = v
+	}
+
+	var summary neo4j.ResultSummary
+	_, err := session.ExecuteWrite(context.Background(),
+		func(tx neo4j.ManagedTransaction) (any, error) {
+			result, err := tx.Run(context.Background(), request.Query, params)
+			if err != nil {
+				return nil, err
+			}
+			summary, err = result.Consume(context.Background())
+			if err != nil {
+				return nil, err
+			}
+			return summary, nil
+		})
+
+	return summary, err
+}
+
+// Helper function to detect write queries (CREATE, MERGE, DELETE, etc.)
+func isWriteQuery(query string) bool {
+	writeKeywords := []string{"CREATE", "MERGE", "SET", "DELETE", "REMOVE", "DETACH DELETE", "CALL"}
+	for _, keyword := range writeKeywords {
+		if strings.Contains(strings.ToUpper(query), keyword) {
+			return true
+		}
+	}
+	return false
+}
+
+// Main function
 func main() {
-	dbUri := "neo4j://localhost:7687" // scheme://host(:port) (default port is 7687)
-	driver, err := neo4j.NewDriverWithContext(dbUri, neo4j.BasicAuth("neo4j", "NewJob2308!", ""))
+	// Connect to Neo4j
+	driver, err := neo4j.NewDriverWithContext("neo4j://localhost:7687", neo4j.BasicAuth("neo4j", "NewSchool2308!", ""))
 	if err != nil {
-		panic(err)
-	}
-	// Starting with 5.0, you can control the execution of most driver APIs
-	// To keep things simple, we create here a never-cancelling context
-	// Read https://pkg.go.dev/context to learn more about contexts
-	ctx := context.Background()
-	// Handle driver lifetime based on your application lifetime requirements.
-	// driver's lifetime is usually bound by the application lifetime, which usually implies one driver instance per
-	// application
-
-	defer driver.Close(ctx) // Make sure to handle errors during deferred calls
-	item, err := insertItem(ctx, driver)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%v\n", item)
-
-	http.HandleFunc("/hello", helloHandler) // Update this line of code
-
-	fmt.Printf("Starting server at port 8080\n")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
+	defer driver.Close(context.Background())
 
-	
-}
+	// Create a session
+	session := driver.NewSession(context.Background(), neo4j.SessionConfig{DatabaseName: "neo4j"})
+	defer session.Close(context.Background())
 
+	// Start HTTP server and handle requests
+	http.HandleFunc("/query", func(w http.ResponseWriter, r *http.Request) {
+		var request Neo4jRequest
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
+		// Call appropriate function based on the type of query
+		if isWriteQuery(request.Query) {
+			summary, err := executeWriteQuery(session, request)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			notifs, _ := convertNotifications(summary.Notifications())
+			json.NewEncoder(w).Encode(notifs)
 
-func insertItem(ctx context.Context, driver neo4j.DriverWithContext) (*Item, error) {
-	result, err := neo4j.ExecuteQuery(ctx, driver,
-		"CREATE (n:Item { id: $id, name: $name }) RETURN n",
-		map[string]any{
-			"id":   1,
-			"name": "Item 1",
-		}, neo4j.EagerResultTransformer)
-	if err != nil {
-		return nil, err
-	}
-	itemNode, _, err := neo4j.GetRecordValue[neo4j.Node](result.Records[0], "n")
-	if err != nil {
-		return nil, fmt.Errorf("could not find node n")
-	}
-	id, err := neo4j.GetProperty[int64](itemNode, "id")
-	if err != nil {
-		return nil, err
-	}
-	name, err := neo4j.GetProperty[string](itemNode, "name")
-	if err != nil {
-		return nil, err
-	}
-	return &Item{Id: id, Name: name}, nil
-}
+		} else {
+			jsonData, err := executeReadQuery(session, request)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			// Return nodes as JSON
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(jsonData)
+		}
+	})
 
-type Item struct {
-	Id   int64
-	Name string
-}
-
-func (i *Item) String() string {
-	return fmt.Sprintf("Item (id: %d, name: %q)", i.Id, i.Name)
-}
-
-func helloHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/hello" {
-		http.Error(w, "404 not found.", http.StatusNotFound)
-		return
-	}
-
-	if r.Method != "GET" {
-		http.Error(w, "Method is not supported.", http.StatusNotFound)
-		return
-	}
-
-	fmt.Fprintf(w, "Hello!")
+	log.Println("Server starting on port 8080...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
