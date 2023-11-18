@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
@@ -13,6 +12,7 @@ import (
 // Struct for JSON request
 type Neo4jRequest struct {
 	Query      string            `json:"query"`
+	IsWrite    bool              `json:"isWrite"`
 	Parameters map[string]string `json:"parameters"`
 }
 
@@ -100,16 +100,16 @@ func executeWriteQuery(session neo4j.SessionWithContext, request Neo4jRequest) (
 	return summary, err
 }
 
-// Helper function to detect write queries (CREATE, MERGE, DELETE, etc.)
-func isWriteQuery(query string) bool {
-	writeKeywords := []string{"CREATE", "MERGE", "SET", "DELETE", "REMOVE", "DETACH DELETE", "CALL"}
-	for _, keyword := range writeKeywords {
-		if strings.Contains(strings.ToUpper(query), keyword) {
-			return true
-		}
-	}
-	return false
-}
+// // Helper function to detect write queries (CREATE, MERGE, DELETE, etc.)
+// func isWriteQuery(query string) bool {
+// 	writeKeywords := []string{"CREATE", "MERGE", "SET", "DELETE", "REMOVE", "DETACH DELETE", "CALL"}
+// 	for _, keyword := range writeKeywords {
+// 		if strings.Contains(strings.ToUpper(query), keyword) {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
 
 // Main function
 func main() {
@@ -133,7 +133,7 @@ func main() {
 		}
 
 		// Call appropriate function based on the type of query
-		if isWriteQuery(request.Query) {
+		if request.IsWrite {
 			summary, err := executeWriteQuery(session, request)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
