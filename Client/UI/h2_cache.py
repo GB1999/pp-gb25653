@@ -11,7 +11,7 @@ class H2Cache:
         create_table_sql = """
         CREATE TABLE IF NOT EXISTS query_cache (
             query VARCHAR(1024),
-            result VARCHAR(4096)
+            result VARCHAR(65535)
         );
         """
         cursor = self.h2_conn.cursor()
@@ -41,8 +41,6 @@ class H2Cache:
 
     def execute_query(self, query, is_write):
         if is_write:
-            print("CLEARING CACHE")
-            self.clear_cache()
             return None
 
         cached_result = self.get_cached_result(query)

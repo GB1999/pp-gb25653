@@ -1,46 +1,25 @@
 {
-   "Graph":{
-      "adjacency":{
-         "a":[
-            "1",
-            "2"
-         ],
-         "b":[
-            "3"
-         ]
-      },
-      "nodes":{
-         "a":{
-            "value":5
+   "Graph": {
+      "adjacency": {},
+      "nodes": {
+         "19": {
+            "name": "Alice",
+            "age": 25
          },
-         "b":{
-            "value":10
+         "20": {
+            "name": "John",
+            "age": 25
          },
-         "c":{
-            "value":20
+         "21": {
+            "name": "Jacob",
+            "age": 22
          }
       },
-      "edges":{
-         "1":{
-            "from":"a",
-            "to":"b",
-            "data":{
-               "length":2
-            }
-         },
-         "2":{
-            "from":"a",
-            "to":"b",
-            "data":{
-               "length":5
-            }
-         },
-         "3":{
-            "from":"b",
-            "to":"c",
-            "data":{
-               "length":3
-            }
+      "edges": {
+         "10": {
+            "from": "20",
+            "to": "19",
+            "type": "Friend"
          }
       }
    }
