@@ -2,7 +2,7 @@ import subprocess
 import http
 import requests
 import json
-from h2_cache import H2Cache
+from .h2_cache import H2Cache
 
 class QueryHandler():
     def __init__(self, update_ui_callback, h2_path, lexer_parser_path):
@@ -59,6 +59,9 @@ class QueryHandler():
             response = requests.post("http://localhost:8080/query", data=json_data)
             return response
 
+    def clear_neo4j_graph(self):
+        self.submit_query('MATCH (n) DETACH DELETE n')
+
     def is_write_query(self, query):
         write_keywords = ["CREATE", "MERGE", "SET", "DELETE", "REMOVE", "DETACH DELETE", "CALL"]
         for keyword in write_keywords:
@@ -112,7 +115,7 @@ class QueryHandler():
         # Convert the graph to a JSON string
         json_graph = json.dumps(adjacency_list_graph, indent=3)
         # Write the JSON string to a file
-        with open("../Visualizer/graph.json", 'w') as file:
+        with open("../../Visualizer/graph.json", 'w') as file:
             file.write(json_graph)
             file.close()
 

@@ -1,7 +1,7 @@
 import tkinter
 import tkinter.messagebox
 import customtkinter
-from query_handler import QueryHandler
+from .query_handler import QueryHandler
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -83,7 +83,7 @@ class App(customtkinter.CTk):
         self.query_handler.submit_query(query)
 
     def on_clear(self, event):
-        self.query_handler.submit_query("MATCH (n) DETACH DELETE n")
+        self.query_handler.clear_neo4j_graph()
 
     def on_refresh(self, event):
         self.query_handler.submit_query("MATCH (n) OPTIONAL MATCH (n)-[r]-(m) RETURN n, r, m")

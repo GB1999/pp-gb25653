@@ -1,6 +1,5 @@
-from app import App
-from query_handler import QueryHandler
-from h2_cache import H2Cache
+from client_ui_components import App
+
 
 if __name__ == "__main__":
     h2_path = "/Users/gagebenham/Documents/ECE-382V/Project/Client/Cache/h2-1.4.200.jar"
