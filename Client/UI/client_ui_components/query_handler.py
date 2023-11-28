@@ -48,6 +48,7 @@ class QueryHandler():
                     result = (f"An error occurred: {str(e)}")
                     tag = "error"
 
+        self.result = result
         self.ui_callback("0.0", f"{result}\n", tags=[tag])
 
     def send_neo4j_query(self, neo4j_query, is_write_query):
@@ -62,6 +63,9 @@ class QueryHandler():
     def clear_neo4j_graph(self):
         self.submit_query('MATCH (n) DETACH DELETE n')
 
+    def get_last_query_result(self):
+        return self.result
+
     def is_write_query(self, query):
         write_keywords = ["CREATE", "MERGE", "SET", "DELETE", "REMOVE", "DETACH DELETE", "CALL"]
         for keyword in write_keywords:
@@ -70,12 +74,9 @@ class QueryHandler():
         return False
 
     def restructure_response(self, response):
-
+        print("RESTRUCTURING")
         if response == "null" or response is None:
             return
-
-        print("//////NEO4J REPONSE//////")
-        print(response)
 
         graph = json.loads(response)
         graph = self.clean_nones(graph)
@@ -86,7 +87,6 @@ class QueryHandler():
 
         # Process the Neo4j graph data
         for entry in graph:
-            print(entry)
             for value in entry["Values"]:
                 if "Labels" in value and "Person" in value["Labels"]:
                     # Add node

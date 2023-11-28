@@ -1,0 +1,37 @@
+# Build artifacts
+_build/
+
+# Dependency directories
+_opam/
+
+# Editor/IDE files
+.merlin
+
+# Temporary/Cache files
+*.swp
+.DS_Store
+
+# Log files
+*.log
+
+# Compiled OCaml files
+*.cmi
+*.cmo
+*.cma
+*.cmx
+*.cmxa
+*.cmxs
+*.o
+
+# Editor backup files
+*~
+
+# Documentation files
+_doc/
+
+# Other temporary/generated files
+*.out
+*.exe
+
+# User-specific configuration files
+.user-setup
