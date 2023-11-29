@@ -1,1 +1,2 @@
 Database/neo4j-community-5.11.0/
+*.pyc

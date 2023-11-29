@@ -7,8 +7,8 @@ from client_ui_components import QueryHandler
 @pytest.fixture
 def query_handler():
     update_ui_callback = Mock()
-    h2_path = "/Users/gagebenham/Documents/ECE-382V/Project/Client/Cache/h2-1.4.200.jar"
-    lexer_parser_path = "/Users/gagebenham/Documents/ECE-382V/Project/Client/LexerParser/main"
+    h2_path = "../../Cache/h2-1.4.200.jar"
+    lexer_parser_path = "../../LexerParser/main"
     return QueryHandler(update_ui_callback, h2_path, lexer_parser_path)
 
 def test_parser_failure(query_handler):
