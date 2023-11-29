@@ -40,6 +40,7 @@ func convertNotifications(notifications []neo4j.Notification) ([]JsonNotificatio
 func executeQuery(driver neo4j.DriverWithContext, request Neo4jRequest) ([]byte, error) {
 	params := make(map[string]any)
 
+	// convert request parameters to map
 	for k, v := range request.Parameters {
 		params[k] = v
 	}
@@ -50,6 +51,8 @@ func executeQuery(driver neo4j.DriverWithContext, request Neo4jRequest) ([]byte,
 	}
 
 	var jsonData []byte
+	// if request is a write query, recursively call execute query
+	// to return updated graph instead of null
 	if request.IsWrite {
 		readRequest := Neo4jRequest{"MATCH (n) OPTIONAL MATCH (n)-[r]-(m) RETURN n, r, m", false, request.Parameters}
 		jsonData, err = executeQuery(driver, readRequest)
@@ -68,18 +71,25 @@ func main() {
 	}
 	defer driver.Close(context.Background())
 
+	// create query endpoint for client and handle logic
 	http.HandleFunc("/query", func(w http.ResponseWriter, r *http.Request) {
 		var request Neo4jRequest
+
+		// decode request body json to Neo4jRequest object (request)
 		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
+		// execute the query using neo4j driver and Neo4j request
+		// record json response and any errors that occur
 		jsonData, err := executeQuery(driver, request)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// write json response
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(jsonData)
 	})
