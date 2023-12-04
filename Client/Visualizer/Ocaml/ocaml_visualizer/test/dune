@@ -1,2 +1,4 @@
 (test
- (name visualizer_test))
+ (name visualizer_test)
+ (libraries alcotest ocaml_visualizer))
+ 

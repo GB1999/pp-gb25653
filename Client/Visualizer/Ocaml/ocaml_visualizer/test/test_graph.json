@@ -1,0 +1,184 @@
+{
+   "Graph": {
+      "adjacency": {},
+      "nodes": {
+         "110": {
+            "name": "John Stevens",
+            "age": 99
+         },
+         "119": {
+            "name": "Matthew Guerra",
+            "age": 19
+         },
+         "118": {
+            "name": "Marissa Matthews",
+            "age": 75
+         },
+         "117": {
+            "name": "Todd Webb",
+            "age": 77
+         },
+         "116": {
+            "name": "Lisa Higgins",
+            "age": 33
+         },
+         "114": {
+            "name": "Andrea Carroll",
+            "age": 62
+         },
+         "115": {
+            "name": "Michelle Johnson",
+            "age": 91
+         },
+         "112": {
+            "name": "Jason Fields",
+            "age": 34
+         },
+         "111": {
+            "name": "Garrett Howell",
+            "age": 19
+         },
+         "113": {
+            "name": "Michael Brown",
+            "age": 85
+         }
+      },
+      "edges": {
+         "53": {
+            "from": "119",
+            "to": "110",
+            "type": "Friend"
+         },
+         "51": {
+            "from": "118",
+            "to": "110",
+            "type": "Friend"
+         },
+         "47": {
+            "from": "117",
+            "to": "110",
+            "type": "Friend"
+         },
+         "45": {
+            "from": "116",
+            "to": "110",
+            "type": "Friend"
+         },
+         "40": {
+            "from": "114",
+            "to": "110",
+            "type": "Friend"
+         },
+         "32": {
+            "from": "110",
+            "to": "115",
+            "type": "Friend"
+         },
+         "31": {
+            "from": "110",
+            "to": "112",
+            "type": "Friend"
+         },
+         "30": {
+            "from": "110",
+            "to": "119",
+            "type": "Friend"
+         },
+         "29": {
+            "from": "110",
+            "to": "111",
+            "type": "Friend"
+         },
+         "42": {
+            "from": "115",
+            "to": "111",
+            "type": "Friend"
+         },
+         "38": {
+            "from": "113",
+            "to": "111",
+            "type": "Friend"
+         },
+         "35": {
+            "from": "111",
+            "to": "119",
+            "type": "Friend"
+         },
+         "34": {
+            "from": "111",
+            "to": "118",
+            "type": "Friend"
+         },
+         "33": {
+            "from": "111",
+            "to": "116",
+            "type": "Friend"
+         },
+         "36": {
+            "from": "112",
+            "to": "119",
+            "type": "Friend"
+         },
+         "39": {
+            "from": "113",
+            "to": "119",
+            "type": "Friend"
+         },
+         "37": {
+            "from": "113",
+            "to": "117",
+            "type": "Friend"
+         },
+         "55": {
+            "from": "119",
+            "to": "114",
+            "type": "Friend"
+         },
+         "41": {
+            "from": "114",
+            "to": "118",
+            "type": "Friend"
+         },
+         "49": {
+            "from": "118",
+            "to": "115",
+            "type": "Friend"
+         },
+         "48": {
+            "from": "117",
+            "to": "115",
+            "type": "Friend"
+         },
+         "43": {
+            "from": "115",
+            "to": "119",
+            "type": "Friend"
+         },
+         "52": {
+            "from": "119",
+            "to": "116",
+            "type": "Friend"
+         },
+         "44": {
+            "from": "116",
+            "to": "118",
+            "type": "Friend"
+         },
+         "50": {
+            "from": "118",
+            "to": "117",
+            "type": "Friend"
+         },
+         "46": {
+            "from": "117",
+            "to": "119",
+            "type": "Friend"
+         },
+         "54": {
+            "from": "119",
+            "to": "118",
+            "type": "Friend"
+         }
+      }
+   }
+}
