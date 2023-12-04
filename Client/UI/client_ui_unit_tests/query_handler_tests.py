@@ -22,7 +22,8 @@ def test_cached_query(query_handler):
     cached_result = "Cached Result"
     with patch.object(query_handler.cache, 'execute_query', return_value=cached_result):
         query_handler.submit_query(query)
-        query_handler.ui_callback.assert_called_with("0.0", f"{cached_result}\n", tags=["success"])
+        # check ui_callback invocation has "cached" tag
+        query_handler.ui_callback.assert_called_with("0.0", f"{cached_result}\n", tags=["success", "cached"])
 
 
 def test_neo4j_query_success(query_handler):
@@ -42,7 +43,7 @@ def test_write_query_cache_clearing(query_handler):
         query_handler.submit_query(write_query)
         mock_clear_cache.assert_called_once()
 
-# check to test whether is_write can distinguish betwen read and write cypher queries
+# check to test whether is_write can distinguish between read and write cypher queries
 @pytest.mark.parametrize("query,expected", [
     ("CREATE (n:Person {name: 'Alice'})", True),
     ("MATCH (n) RETURN n", False),

@@ -67,6 +67,7 @@ class App(customtkinter.CTk):
         self.textbox = customtkinter.CTkTextbox(self, width=250)
         self.textbox.grid(row=1, column=1, padx=(20, 0), pady=(20, 20), sticky="nsew", columnspan=3)
         self.textbox.tag_config("error", foreground="red")
+        self.textbox.tag_config("cached", underline=True)
         self.textbox.tag_config("success", foreground="green")
 
         # set default values
