@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
@@ -48,20 +48,24 @@ func (s *Server) routes() {
 func (s *Server) submitQuery() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var request Neo4jRequest
-
+		
 		// decode request body json to Neo4jRequest object (request)
 		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
+		fmt.Printf("Recieved %v\n", fmt.Sprint(request.Parameters))
+		
 		// execute the query using the provided neo4j driver and Neo4j request
 		// record json response and any errors that occur
 		jsonData, err := executeQuery(s.driver, request)
 		if err != nil {
+			fmt.Printf("Encountered Error: %v\n", fmt.Sprint(err.Error()))
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		fmt.Printf(string(jsonData))
 
 		// write json response
 		w.Header().Set("Content-Type", "application/json")

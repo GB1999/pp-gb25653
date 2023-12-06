@@ -1,30 +1,16 @@
 #!/bin/bash
 
-# Define the path to the virtual environment
-VENV_PATH="./venv"
-
-# Check if the virtual environment already exists
-if [ ! -d "$VENV_PATH" ]; then
-    echo "Creating a virtual environment at $VENV_PATH"
-    python3 -m venv $VENV_PATH
-fi
-
-# Activate the virtual environment
-source $VENV_PATH/bin/activate
-
-# Install dependencies from requirements.txt
-echo "Installing dependencies from requirements.txt"
-pip install --upgrade pip setuptools wheel
-sudo pip install -r requirements.txt
-
 # Run the Python script
 echo "Running the Python script"
+
+# Python Environment
+"/home/ubuntu/anaconda3/envs/UI/bin/python3"
 
 # File containing the queries
 QUERY_FILE="generated_queries.txt"
 
 # Python script to execute queries
-PYTHON_SCRIPT="../UI/client_ui_benchmark/cypher_query_benchmark.py"
+PYTHON_SCRIPT="/home/ubuntu/Documents/pp-gb25653/Client/UI/client_ui_benchmark/cypher_query_benchmark.py"
 
 # Check if the query file exists
 if [ ! -f "$QUERY_FILE" ]; then
@@ -43,7 +29,7 @@ do
     start_time=$(date +%s.%N)
     
     # Send query to the Python script
-    echo "$query" | python $PYTHON_SCRIPT
+    echo "$query" | $PYTHON_ENVIRONMENT $PYTHON_SCRIPT
     
     end_time=$(date +%s.%N)
     
@@ -51,7 +37,7 @@ do
     query_time=$(echo "$end_time - $start_time" | bc)
     total_time=$(echo "$total_time + $query_time" | bc)
     
-    ((count++))
+    count=$((count+1))
 
     # Optional: Display time for each query
     echo "Query $count time: $query_time seconds"

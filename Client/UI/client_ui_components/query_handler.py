@@ -83,10 +83,6 @@ class QueryHandler():
             self.write_query_to_file(create_query)
             self.submit_query(create_query)
 
-        # perform a read query to count the number of people
-        count_query = 'MATCH (p:Person) RETURN count(p) as total;'
-        self.submit_query(count_query)
-
         # assign friendships
         for person in people:
             number_of_friends = random.randint(1, 5)  # Each person will have 1 to 5 friends

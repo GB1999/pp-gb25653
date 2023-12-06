@@ -1,4 +1,4 @@
-#!/Users/gagebenham/anaconda3/envs/Programming_Paradigms_Client_UI/bin python3
+#!/home/ubuntu/anaconda3/envs/UI/bin/python
 import sys
 from pathlib import Path
 
@@ -26,4 +26,3 @@ query_handler.submit_query(query_arg)
 
 for line in sys.stdin:
     print(query_handler.get_last_query_result())
-

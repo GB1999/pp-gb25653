@@ -1,7 +1,7 @@
 import tkinter
 import tkinter.messagebox
 import customtkinter
-from .query_handler import QueryHandler
+from client_ui_components.query_handler import QueryHandler
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -52,13 +52,13 @@ class App(customtkinter.CTk):
         self.main_button_1.bind("<Button-1>", self.on_submit)
 
         self.clear_button = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"), text="Clear Database")
-        self.clear_button.grid(row=1, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.clear_button.grid(row=2, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
         self.clear_button.bind("<Button-1>", self.on_clear)
 
-        self.refresh_button = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2,
-                                                    text_color=("gray10", "#DCE4EE"), text="Refresh")
-        self.refresh_button.grid(row=2, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
-        self.refresh_button.bind("<Button-1>", self.on_refresh)
+        # self.refresh_button = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2,
+        #                                             text_color=("gray10", "#DCE4EE"), text="Refresh")
+        # self.refresh_button.grid(row=2, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        # self.refresh_button.bind("<Button-1>", self.on_refresh)
 
         # create textbox
         self.response_label = customtkinter.CTkLabel(self, text="Response",font=customtkinter.CTkFont(size=16, weight="bold"))
