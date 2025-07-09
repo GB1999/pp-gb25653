@@ -1,53 +1,90 @@
-📌 Overview
-This project was developed as the final submission for Programming Paradigm at The University of Texas at Austin. It explores the intersection of language design, parsing, and query optimization through the implementation of a Cypher query processing toolchain. The system includes a lexer/parser, benchmarking suite, and a lightweight user interface.
 
-🎯 Purpose and Learning Goals
-The primary goal of this project was to apply principles from the course—including functional, object-oriented, and declarative programming paradigms—to a real-world use case involving:
+```markdown
+## 🎓 Final Project – Programming Paradigms  
+**CS 345 – The University of Texas at Austin**
 
-Language processing using parser generators and Go
+---
 
-Programmatic query analysis with custom lexer/parser for Cypher
+## 📌 Overview
 
-Benchmark-driven evaluation of query patterns and performance
+This repository contains the final project for **Programming Paradigms (CS 345)** at The University of Texas at Austin. The project centers on building a modular toolchain for processing and evaluating **Cypher queries**, the graph query language used in systems like Neo4j.
 
-Separation of concerns across modular client components (parser, benchmarking tools, UI)
+Through this project, we explored a combination of programming paradigms—including declarative, functional, and object-oriented approaches—by implementing:
 
-This project emphasizes modular design, practical use of external tools (ANTLR), and the ability to extend language tooling for domain-specific applications like graph databases.
+- A custom lexer and parser for Cypher using **ANTLR** and **Go**
+- A benchmarking suite for performance evaluation of generated queries
+- A foundational UI layer for navigating query sets or results
 
-🧱 Project Structure
-bash
-Copy
-Edit
+---
+
+## 🎯 Purpose and Learning Goals
+
+The project demonstrates how core principles from the course can be applied to:
+
+- **Language parsing and generation**  
+- **Query optimization and benchmarking**  
+- **Concurrency and modular design in Go**  
+- **Tooling for domain-specific languages**
+
+It serves as a practical application of multiple paradigms, showing how compiler concepts and evaluation logic can be adapted to real-world graph querying problems.
+
+---
+
+## 🧱 Project Structure
+
+```
+
 Client/
-├── Benchmark/        # Scripts for generating and testing Cypher query performance
-├── Cache/            # Supporting libraries (e.g. H2 JARs)
-├── LexerParser/      # Cypher grammar parser written in Go using ANTLR
-└── UI/               # Early-stage interface and supporting UX files
-⚙️ Technologies & Paradigms
-Go (Golang) – Chosen for its concurrency model and functional idioms
+├── Benchmark/        # Scripts for generating and evaluating Cypher query performance
+├── Cache/            # Dependency jars, including H2 database
+├── LexerParser/      # Go-based Cypher grammar parser using ANTLR
+└── UI/               # Prototype user interface and related files
 
-ANTLR – Used to define and generate the Cypher grammar parser
+````
 
-Shell Scripting – For automating benchmarks and task execution
+---
 
-Cypher – Graph query language, used as the testbed for parsing and analysis
+## ⚙️ Technologies & Paradigms
 
-🚀 Running the Project
-To explore the components:
+- **Go (Golang)** – Emphasizing concurrency and procedural control
+- **ANTLR** – Parser generation from formal grammar definitions
+- **Cypher** – Declarative graph query language
+- **Shell Scripting** – Automating benchmark routines
 
-Lexer/Parser
+---
 
-Navigate to Client/LexerParser/
+## 🚀 Getting Started
 
-Run: go run main.go (ensure Go and ANTLR are properly installed)
+### 1. Lexer/Parser
 
-Benchmarking
+```bash
+cd Client/LexerParser/
+go run main.go
+````
 
-Navigate to Client/Benchmark/
+> Ensure [Go](https://golang.org/dl/) and [ANTLR](https://www.antlr.org/) are installed.
 
-Use query_benchmark.sh to run performance tests on generated queries
+### 2. Benchmarking
 
-⚠️ Note: This project was built and tested in a local environment—some paths or dependencies may need configuration for other systems.
+```bash
+cd Client/Benchmark/
+./query_benchmark.sh
+```
 
-🧠 Reflections
-This project allowed us to synthesize course concepts through the lens of a domain-specific toolchain. It involved functional parsing logic, concurrency principles in Go, and real-world applications of declarative query languages.
+> Dependencies such as `requirements.txt` are included for reproducibility.
+
+---
+
+## 🧠 Reflections
+
+This project provided an opportunity to explore language design, parsing strategies, and runtime performance in the context of graph databases. It reinforced course concepts through practical implementation and helped demonstrate the value of combining different paradigms for building robust, extensible systems.
+
+---
+
+## 📁 Notes
+
+* Some paths may require editing based on your local machine.
+* `.DS_Store` files can be ignored or deleted on non-macOS systems.
+* Future extensions might include a query visualizer or Neo4j integration.
+
+
